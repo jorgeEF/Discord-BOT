@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Crear una nueva sesión para el bot
+tmux new-session -d -s discord-bot "node bot.js"
