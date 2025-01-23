@@ -6,6 +6,11 @@ const token = process.env.BOT_TOKEN;
 const clientId = process.env.DISCORD_APP_ID;
 const guildId = process.env.DISCORD_SERVER_ID;
 
+if (!token || !clientId || !guildId) {
+    console.error('Error: Faltan variables de entorno BOT_TOKEN, DISCORD_APP_ID o DISCORD_SERVER_ID.');
+    process.exit(1);
+}
+
 // Crea una instancia del cliente de Discord
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
