@@ -1,8 +1,15 @@
 #!/bin/bash
 
+# Determinar el directorio del script
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Registrar el inicio del script
+echo "Iniciando el script run_bot.sh" #>> "$SCRIPT_DIR/cron.log"
+
 # Cargar nvm
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+echo "NVM cargado" #>> "$SCRIPT_DIR/cron.log"
 
 # Determinar rutas dinámicas para tmux y node
 TMUX_BIN="$(which tmux)"
@@ -10,17 +17,28 @@ NODE_BIN="$(which node)"
 
 # Validar si se encontraron las rutas
 if [ -z "$TMUX_BIN" ]; then
-  echo "Error: No se encontró tmux en el PATH." >&2
+  echo "Error: No se encontró tmux en el PATH." >> "$SCRIPT_DIR/cron.log"
   exit 1
 fi
 
 if [ -z "$NODE_BIN" ]; then
-  echo "Error: No se encontró node en el PATH." >&2
+  echo "Error: No se encontró node en el PATH." >> "$SCRIPT_DIR/cron.log"
   exit 1
 fi
 
-# Determinar el directorio del script
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+echo "TMUX_BIN: $TMUX_BIN" #>> "$SCRIPT_DIR/cron.log"
+echo "NODE_BIN: $NODE_BIN" #>> "$SCRIPT_DIR/cron.log"
+
+# Cambiar al directorio del script
+cd "$SCRIPT_DIR" || { echo "Error: No se pudo cambiar al directorio $SCRIPT_DIR" >> "$SCRIPT_DIR/cron.log"; exit 1; }
+echo "Directorio cambiado a $(pwd)" #>> "$SCRIPT_DIR/cron.log"
 
 # Crear una nueva sesión para el bot, usando las rutas dinámicas
-"$TMUX_BIN" new-session -d -s discord-bot "$NODE_BIN $SCRIPT_DIR/bot.js"
+"$TMUX_BIN" new-session -d -s discord-bot "/bin/bash -c '$NODE_BIN bot.js || read -p \"Error detectado. Presiona enter para cerrar...\"'"
+
+# Registrar éxito en la creación de la sesión
+if [ $? -eq 0 ]; then
+  echo "Sesión tmux creada para Discord Bot" #>> "$SCRIPT_DIR/cron.log"
+else
+  echo "Error al crear la sesión tmux" >> "$SCRIPT_DIR/cron.log"
+fi
