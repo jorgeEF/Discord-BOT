@@ -8,5 +8,8 @@ export NVM_DIR="$HOME/.config/nvm"
 # Asegurarse de que tmux y otros binarios sean accesibles
 export PATH="$PATH:/snap/bin:/home/confin/.config/nvm/versions/node/v22.13.1/bin"
 
+# Establecer el directorio de trabajo
+cd /home/confin/discordBot || { echo "Error: No se pudo cambiar al directorio /home/confin/discordBot" >> /home/confin/discordBot/cron_debug.log; exit 1; }
+
 # Crear una nueva sesión para el bot
 tmux new-session -d -s discord-bot "node bot.js"
