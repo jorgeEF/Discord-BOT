@@ -1,4 +1,12 @@
 #!/bin/bash
 
+# Cargar nvm
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# actulizar path de tmux y node con: wich tmux y wich npm
+# Asegurarse de que tmux y otros binarios sean accesibles
+export PATH="$PATH:/snap/bin:/home/confin/.config/nvm/versions/node/v22.13.1/bin"
+
 # Crear una nueva sesión para el bot
 tmux new-session -d -s discord-bot "node bot.js"
