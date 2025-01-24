@@ -1,4 +1,4 @@
 /node_modules
 *.env
+*.sh
 package-lock.json
-run_discordBot.sh
