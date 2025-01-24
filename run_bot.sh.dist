@@ -4,12 +4,23 @@
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-# actulizar path de tmux y node con: wich tmux y wich npm
-# Asegurarse de que tmux y otros binarios sean accesibles
-export PATH="$PATH:/snap/bin:/home/confin/.config/nvm/versions/node/v22.13.1/bin"
+# Determinar rutas dinámicas para tmux y node
+TMUX_BIN="$(which tmux)"
+NODE_BIN="$(which node)"
+
+# Validar si se encontraron las rutas
+if [ -z "$TMUX_BIN" ]; then
+  echo "Error: No se encontró tmux en el PATH." >&2
+  exit 1
+fi
+
+if [ -z "$NODE_BIN" ]; then
+  echo "Error: No se encontró node en el PATH." >&2
+  exit 1
+fi
 
 # Determinar el directorio del script
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Crear una nueva sesión para el bot, usando el directorio del script
-tmux new-session -d -s discord-bot "node $SCRIPT_DIR/bot.js"
+# Crear una nueva sesión para el bot, usando las rutas dinámicas
+"$TMUX_BIN" new-session -d -s discord-bot "$NODE_BIN $SCRIPT_DIR/bot.js"
