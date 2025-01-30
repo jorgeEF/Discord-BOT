@@ -25,6 +25,10 @@ const commands = [
         description: 'Obtén información sobre el bot.',
     },
     {
+        name: 'web',
+        description: 'Proporciona la dirección de la web de El Confín Gaming',
+    },
+    {
         name: 'avatar',
         description: 'Muestra tu avatar o el de otro usuario.',
         options: [
@@ -63,14 +67,25 @@ client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;
 
     const { commandName, options } = interaction;
-
-    if (commandName === 'ping') {
-        await interaction.reply('🏓 Pong!');
-    } else if (commandName === 'info') {
-        await interaction.reply(`🤖 ¡Hola! Soy el bot de ${interaction.client.user.tag}.`);
-    } else if (commandName === 'avatar') {
-        const user = options.getUser('usuario') || interaction.user;
-        await interaction.reply(`🖼️ Aquí está el avatar de ${user.username}: ${user.displayAvatarURL({ dynamic: true, size: 1024 })}`);
+    
+    switch (commandName) {
+        case 'ping':
+            await interaction.reply('🏓 Pong!');
+            break;
+        case 'info':
+            await interaction.reply(`🤖 ¡Hola! Soy el bot de ${interaction.client.user.tag}.`);
+            break;
+        case 'web':
+                await interaction.reply(`Nuestra web: https://confin.ddns.net.`);
+                break;
+        case 'avatar':
+            const user = options.getUser('usuario') || interaction.user;
+            await interaction.reply(`🖼️ Aquí está el avatar de ${user.username}: ${user.displayAvatarURL({ dynamic: true, size: 1024 })}`);
+            break;
+        default:
+            // Puedes agregar una respuesta por defecto en caso de que no se reconozca el comando
+            await interaction.reply('❓ Comando no reconocido.');
+            break;
     }
 });
 
